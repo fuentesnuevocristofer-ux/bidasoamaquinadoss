@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BIDASOA – Sistema de Control de Maquinados</title>
+  <meta name="description" content="Plataforma corporativa de gestión de manufactura – Taller Maquinados – Bidasoa"/>
+  <meta name="theme-color" content="#0d2a6b"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d2a6b'/><text y='24' x='4' font-family='Arial' font-size='18' font-weight='900' fill='white'>B</text></svg>"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body class="login-page">
+
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <section id="login-screen" class="login-screen active">
+    <div class="login-bg-overlay"></div>
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="https://www.genspark.ai/api/files/s/f3nxD4Fk" alt="Bidasoa Logo" class="logo-img-login"/>
+      </div>
+      <div class="login-divider"></div>
+      <h2 class="login-title">Sistema de Control de Maquinados</h2>
+      <p class="login-subtitle">Taller MAQUINADOS — Acceso Corporativo</p>
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-user"><i class="fa fa-user"></i> Usuario</label>
+          <input type="text" id="login-user" placeholder="Ingresa tu usuario" autocomplete="username" required/>
+        </div>
+        <div class="form-group">
+          <label for="login-pass"><i class="fa fa-lock"></i> Contraseña</label>
+          <input type="password" id="login-pass" placeholder="Ingresa tu contraseña" autocomplete="current-password" required/>
+        </div>
+        <div id="login-error" class="login-error hidden">
+          <i class="fa fa-exclamation-circle"></i> Usuario o contraseña incorrectos.
+        </div>
+        <button type="submit" class="btn-login">
+          <i class="fa fa-sign-in-alt"></i> Ingresar al Sistema
+        </button>
+      </form>
+      <p class="login-footer">© 2026 Manufacturera de Papel Bidasoa · Acceso Restringido</p>
+    </div>
+  </section>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="app" class="app-container hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <img src="https://www.genspark.ai/api/files/s/sz1TtEDy" alt="Bidasoa" class="sidebar-logo"/>
+      </div>
+      <nav class="sidebar-nav">
+        <ul id="nav-menu">
+          <!-- Admin items -->
+          <li class="nav-item nav-admin" data-panel="dashboard">
+            <a href="#"><i class="fa fa-tachometer-alt"></i><span>Dashboard</span></a>
+          </li>
+          <li class="nav-item nav-admin" data-panel="trabajos">
+            <a href="#"><i class="fa fa-cogs"></i><span>Gestión de Trabajos</span></a>
+          </li>
+          <li class="nav-item nav-admin" data-panel="priorizacion">
+            <a href="#"><i class="fa fa-sort-numeric-down"></i><span>Priorización</span></a>
+          </li>
+          <li class="nav-item nav-admin" data-panel="importar">
+            <a href="#"><i class="fa fa-file-import"></i><span>Importar Masivo</span></a>
+          </li>
+          <li class="nav-item nav-admin" data-panel="reportes">
+            <a href="#"><i class="fa fa-chart-bar"></i><span>Reportes</span></a>
+          </li>
+          <li class="nav-item nav-admin" data-panel="usuarios">
+            <a href="#"><i class="fa fa-users-cog"></i><span>Usuarios y Permisos</span></a>
+          </li>
+          <!-- Operator items -->
+          <li class="nav-item nav-operador" data-panel="mi-torno">
+            <a href="#"><i class="fa fa-industry"></i><span>Mi Torno</span></a>
+          </li>
+          <li class="nav-item nav-operador" data-panel="op-reportes">
+            <a href="#"><i class="fa fa-file-alt"></i><span>Mis Reportes</span></a>
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user-info">
+          <i class="fa fa-user-circle"></i>
+          <div>
+            <span id="sidebar-username" class="sf-name">–</span>
+            <span id="sidebar-role" class="sf-role">–</span>
+          </div>
+        </div>
+        <button id="btn-logout" class="btn-logout" title="Cerrar sesión">
+          <i class="fa fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="main-content">
+
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <button id="sidebar-toggle" class="sidebar-toggle" title="Menú">
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-right">
+          <div class="topbar-date">
+            <i class="fa fa-calendar-alt"></i>
+            <span id="current-date">–</span>
+          </div>
+          <div class="topbar-time">
+            <i class="fa fa-clock"></i>
+            <span id="current-time">–</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- PANELS -->
+      <div class="panels-wrapper">
+
+        <!-- ===== DASHBOARD ===== -->
+        <section id="panel-dashboard" class="panel active">
+          <div class="panel-header">
+            <h1><i class="fa fa-tachometer-alt"></i> Dashboard General</h1>
+            <p class="panel-desc">Resumen ejecutivo del estado de los trabajos en el Taller Maquinados</p>
+          </div>
+          <div class="kpi-grid" id="kpi-grid">
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-icon"><i class="fa fa-list-check"></i></div>
+              <div class="kpi-data">
+                <span class="kpi-value" id="kpi-total">0</span>
+                <span class="kpi-label">Trabajos Totales</span>
+              </div>
+            </div>
+            <div class="kpi-card kpi-yellow">
+              <div class="kpi-icon"><i class="fa fa-spinner"></i></div>
+              <div class="kpi-data">
+                <span class="kpi-value" id="kpi-proceso">0</span>
+                <span class="kpi-label">En Proceso</span>
+              </div>
+            </div>
+            <div class="kpi-card kpi-red">
+              <div class="kpi-icon"><i class="fa fa-exclamation-triangle"></i></div>
+              <div class="kpi-data">
+                <span class="kpi-value" id="kpi-urgentes">0</span>
+                <span class="kpi-label">Urgentes</span>
+              </div>
+            </div>
+            <div class="kpi-card kpi-green">
+              <div class="kpi-icon"><i class="fa fa-check-circle"></i></div>
+              <div class="kpi-data">
+                <span class="kpi-value" id="kpi-terminados">0</span>
+                <span class="kpi-label">Terminados</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="dash-card">
+              <h3><i class="fa fa-industry"></i> Estado por Torno</h3>
+              <div id="tornos-status" class="tornos-status-grid"></div>
+            </div>
+            <div class="dash-card">
+              <h3><i class="fa fa-clock-rotate-left"></i> Últimos Trabajos Ingresados</h3>
+              <div id="recent-trabajos" class="recent-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== GESTIÓN DE TRABAJOS ===== -->
+        <section id="panel-trabajos" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-cogs"></i> Gestión de Trabajos</h1>
+            <p class="panel-desc">Registro y seguimiento de órdenes de maquinado</p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-primary" id="btn-nuevo-trabajo">
+              <i class="fa fa-plus"></i> Nuevo Trabajo
+            </button>
+            <div class="filter-group">
+              <select id="filter-torno" class="select-filter">
+                <option value="">Todos los Tornos</option>
+                <option value="Torno 1">Torno 1</option>
+                <option value="Torno 2">Torno 2</option>
+                <option value="Torno 3">Torno 3</option>
+                <option value="Torno 4">Torno 4</option>
+              </select>
+              <select id="filter-estado" class="select-filter">
+                <option value="">Todos los Estados</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="En Proceso">En Proceso</option>
+                <option value="Terminado">Terminado</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+              <select id="filter-urgencia" class="select-filter">
+                <option value="">Todas las Urgencias</option>
+                <option value="Urgente">Urgente</option>
+                <option value="Medianamente Urgente">Medianamente Urgente</option>
+                <option value="Poco Urgente">Poco Urgente</option>
+              </select>
+              <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" id="search-trabajos" placeholder="Buscar trabajo..."/>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" id="tabla-trabajos">
+              <thead>
+                <tr>
+                  <th>N° Maquinado</th>
+                  <th>Solicitante</th>
+                  <th>Área</th>
+                  <th>Equipo/Máquina</th>
+                  <th>Torno</th>
+                  <th>Material</th>
+                  <th>F. Ingreso</th>
+                  <th>F. Entrega</th>
+                  <th>Prioridad</th>
+                  <th>Urgencia</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-trabajos">
+                <tr class="empty-row"><td colspan="12"><i class="fa fa-inbox"></i> No hay trabajos registrados aún</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== PRIORIZACIÓN ===== -->
+        <section id="panel-priorizacion" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-sort-numeric-down"></i> Priorización de Trabajos</h1>
+            <p class="panel-desc">Arrastra y suelta para reordenar la prioridad de los trabajos por torno</p>
+          </div>
+          <div class="tornos-tabs">
+            <button class="torno-tab active" data-torno="Torno 1">Torno 1</button>
+            <button class="torno-tab" data-torno="Torno 2">Torno 2</button>
+            <button class="torno-tab" data-torno="Torno 3">Torno 3</button>
+            <button class="torno-tab" data-torno="Torno 4">Torno 4</button>
+          </div>
+          <div id="prioridad-lista" class="prioridad-lista">
+            <div class="empty-state"><i class="fa fa-inbox"></i><p>No hay trabajos para este torno</p></div>
+          </div>
+          <div class="prioridad-hint">
+            <i class="fa fa-info-circle"></i> Arrastra las tarjetas para cambiar el orden de prioridad. Los cambios se guardan automáticamente.
+          </div>
+        </section>
+
+        <!-- ===== IMPORTAR MASIVO ===== -->
+        <section id="panel-importar" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-file-import"></i> Importación Masiva</h1>
+            <p class="panel-desc">Carga múltiples trabajos desde un archivo Excel, CSV o PDF</p>
+          </div>
+          <div class="import-zone">
+            <div class="import-dropzone" id="import-dropzone">
+              <i class="fa fa-cloud-upload-alt"></i>
+              <h3>Arrastra tu archivo aquí</h3>
+              <p>Formatos soportados: .xlsx · .xls · .csv · .pdf · .docx</p>
+              <label class="btn-secondary" for="import-file-input">
+                <i class="fa fa-folder-open"></i> Seleccionar Archivo
+              </label>
+              <input type="file" id="import-file-input" accept=".xlsx,.xls,.csv,.pdf,.docx" style="display:none"/>
+            </div>
+            <div id="import-preview" class="import-preview hidden">
+              <div class="import-preview-header">
+                <h3><i class="fa fa-table"></i> Vista Previa de Importación</h3>
+                <span id="import-count">0 registros encontrados</span>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-table" id="import-table">
+                  <thead id="import-thead"></thead>
+                  <tbody id="import-tbody"></tbody>
+                </table>
+              </div>
+              <div class="import-actions">
+                <button class="btn-danger" id="btn-cancelar-import"><i class="fa fa-times"></i> Cancelar</button>
+                <button class="btn-primary" id="btn-confirmar-import"><i class="fa fa-check"></i> Importar Datos</button>
+              </div>
+            </div>
+            <div class="import-template">
+              <h3><i class="fa fa-file-excel"></i> Plantilla de Importación</h3>
+              <p>Descarga la plantilla oficial para garantizar el formato correcto de importación:</p>
+              <button class="btn-secondary" id="btn-download-template">
+                <i class="fa fa-download"></i> Descargar Plantilla Excel
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== REPORTES ===== -->
+        <section id="panel-reportes" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-chart-bar"></i> Módulo de Reportes</h1>
+            <p class="panel-desc">Generación de informes ejecutivos para presentación en junta directiva</p>
+          </div>
+          <div class="reportes-grid">
+            <div class="reporte-card">
+              <div class="reporte-icon"><i class="fa fa-calendar-day"></i></div>
+              <h3>Reporte Diario</h3>
+              <p>Resumen de actividades del día actual con KPIs de entregas y avances.</p>
+              <div class="reporte-actions">
+                <button class="btn-report btn-pdf" data-tipo="diario" data-formato="pdf">
+                  <i class="fa fa-file-pdf"></i> PDF
+                </button>
+                <button class="btn-report btn-excel" data-tipo="diario" data-formato="excel">
+                  <i class="fa fa-file-excel"></i> Excel
+                </button>
+                <button class="btn-report btn-word" data-tipo="diario" data-formato="word">
+                  <i class="fa fa-file-word"></i> Word
+                </button>
+              </div>
+            </div>
+            <div class="reporte-card">
+              <div class="reporte-icon"><i class="fa fa-calendar-week"></i></div>
+              <h3>Reporte Semanal</h3>
+              <p>Análisis semanal de productividad por torno con tiempos y comparativos.</p>
+              <div class="reporte-actions">
+                <button class="btn-report btn-pdf" data-tipo="semanal" data-formato="pdf">
+                  <i class="fa fa-file-pdf"></i> PDF
+                </button>
+                <button class="btn-report btn-excel" data-tipo="semanal" data-formato="excel">
+                  <i class="fa fa-file-excel"></i> Excel
+                </button>
+                <button class="btn-report btn-word" data-tipo="semanal" data-formato="word">
+                  <i class="fa fa-file-word"></i> Word
+                </button>
+              </div>
+            </div>
+            <div class="reporte-card">
+              <div class="reporte-icon"><i class="fa fa-calendar-alt"></i></div>
+              <h3>Reporte Mensual</h3>
+              <p>Informe ejecutivo mensual con estadísticas, eficiencias y proyecciones.</p>
+              <div class="reporte-actions">
+                <button class="btn-report btn-pdf" data-tipo="mensual" data-formato="pdf">
+                  <i class="fa fa-file-pdf"></i> PDF
+                </button>
+                <button class="btn-report btn-excel" data-tipo="mensual" data-formato="excel">
+                  <i class="fa fa-file-excel"></i> Excel
+                </button>
+                <button class="btn-report btn-word" data-tipo="mensual" data-formato="word">
+                  <i class="fa fa-file-word"></i> Word
+                </button>
+              </div>
+            </div>
+            <div class="reporte-card reporte-featured">
+              <div class="reporte-icon"><i class="fa fa-file-invoice"></i></div>
+              <h3>Informe General del Proyecto</h3>
+              <p>Reporte ejecutivo completo: estatus de avances, tiempos empleados y KPI de entregas para junta directiva.</p>
+              <div class="reporte-actions">
+                <button class="btn-report btn-pdf" data-tipo="general" data-formato="pdf">
+                  <i class="fa fa-file-pdf"></i> PDF Ejecutivo
+                </button>
+                <button class="btn-report btn-excel" data-tipo="general" data-formato="excel">
+                  <i class="fa fa-file-excel"></i> Excel Completo
+                </button>
+                <button class="btn-report btn-word" data-tipo="general" data-formato="word">
+                  <i class="fa fa-file-word"></i> Word Presentación
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== USUARIOS Y PERMISOS ===== -->
+        <section id="panel-usuarios" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-users-cog"></i> Gestión de Usuarios y Permisos</h1>
+            <p class="panel-desc">Control de acceso basado en roles (RBAC)</p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-primary" id="btn-nuevo-usuario">
+              <i class="fa fa-user-plus"></i> Nuevo Usuario
+            </button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Usuario</th>
+                  <th>Rol</th>
+                  <th>Torno Asignado</th>
+                  <th>Estado</th>
+                  <th>Permisos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-usuarios">
+                <tr class="empty-row"><td colspan="7"><i class="fa fa-inbox"></i> No hay usuarios registrados</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="permisos-panel" id="permisos-panel" style="display:none">
+            <h3><i class="fa fa-shield-alt"></i> Configurar Permisos de Operador</h3>
+            <div id="permisos-form"></div>
+          </div>
+        </section>
+
+        <!-- ===== MI TORNO (Operador) ===== -->
+        <section id="panel-mi-torno" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-industry"></i> Mi Torno – Vista de Operador</h1>
+            <p class="panel-desc" id="operador-torno-desc">Trabajos asignados ordenados por prioridad</p>
+          </div>
+          <div id="op-trabajos-list" class="op-trabajos-list">
+            <div class="empty-state"><i class="fa fa-inbox"></i><p>No tienes trabajos asignados actualmente</p></div>
+          </div>
+        </section>
+
+        <!-- ===== REPORTES OPERADOR ===== -->
+        <section id="panel-op-reportes" class="panel">
+          <div class="panel-header">
+            <h1><i class="fa fa-file-alt"></i> Mis Reportes</h1>
+            <p class="panel-desc">Descarga el informe de tus trabajos asignados</p>
+          </div>
+          <div class="reportes-grid">
+            <div class="reporte-card">
+              <div class="reporte-icon"><i class="fa fa-file-invoice"></i></div>
+              <h3>Informe de Mi Torno</h3>
+              <p>Reporte detallado de los trabajos de tu torno con evidencias y observaciones.</p>
+              <div class="reporte-actions">
+                <button class="btn-report btn-pdf" data-tipo="mi-torno" data-formato="pdf">
+                  <i class="fa fa-file-pdf"></i> Descargar PDF
+                </button>
+                <button class="btn-report btn-excel" data-tipo="mi-torno" data-formato="excel">
+                  <i class="fa fa-file-excel"></i> Descargar Excel
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /panels-wrapper -->
+    </main>
+  </div><!-- /app -->
+
+  <!-- ===== MODAL: FORMULARIO TRABAJO ===== -->
+  <div id="modal-trabajo" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay-trabajo"></div>
+    <div class="modal-box modal-large">
+      <div class="modal-header">
+        <h2 id="modal-trabajo-title"><i class="fa fa-cogs"></i> Nuevo Trabajo de Maquinado</h2>
+        <button class="modal-close" id="modal-trabajo-close"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-trabajo" class="form-trabajo">
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-id-card"></i> Identificación</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>N° de Maquinado *</label>
+                <input type="text" id="ft-numero" placeholder="Ej: MAQ-2026-001" required/>
+              </div>
+              <div class="form-group">
+                <label>Solicitante *</label>
+                <input type="text" id="ft-solicitante" placeholder="Nombre del solicitante" required/>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-map-marker-alt"></i> Origen y Destino</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Área Solicitante *</label>
+                <input type="text" id="ft-area" placeholder="Ej: Producción, Mantenimiento" required/>
+              </div>
+              <div class="form-group">
+                <label>Equipo / Máquina *</label>
+                <input type="text" id="ft-equipo" placeholder="Equipo que requiere la pieza" required/>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-wrench"></i> Asignación y Materiales</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Torno Asignado *</label>
+                <select id="ft-torno" required>
+                  <option value="">Seleccionar Torno</option>
+                  <option value="Torno 1">Torno 1</option>
+                  <option value="Torno 2">Torno 2</option>
+                  <option value="Torno 3">Torno 3</option>
+                  <option value="Torno 4">Torno 4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Material Requerido *</label>
+                <input type="text" id="ft-material" placeholder="Ej: Acero 1045, Bronce, Aluminio" required/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Operador Asignado</label>
+                <input type="text" id="ft-operador" placeholder="Nombre del operador"/>
+              </div>
+              <div class="form-group">
+                <label>Nivel de Urgencia *</label>
+                <select id="ft-urgencia" required>
+                  <option value="">Seleccionar Urgencia</option>
+                  <option value="Urgente">🔴 Urgente</option>
+                  <option value="Medianamente Urgente">🟡 Medianamente Urgente</option>
+                  <option value="Poco Urgente">🟢 Poco Urgente</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-calendar"></i> Fechas y Tiempos</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha de Ingreso *</label>
+                <input type="date" id="ft-fecha-ingreso" required/>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Entrega *</label>
+                <input type="date" id="ft-fecha-entrega" required/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tiempo Estimado (horas)</label>
+                <input type="number" id="ft-tiempo-est" placeholder="0" min="0" step="0.5"/>
+              </div>
+              <div class="form-group">
+                <label>Estado Inicial</label>
+                <select id="ft-estado">
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En Proceso">En Proceso</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-align-left"></i> Descripción del Trabajo</h3>
+            <div class="form-group full-width">
+              <label>Descripción Detallada</label>
+              <textarea id="ft-descripcion" rows="4" placeholder="Describe el trabajo de maquinado, especificaciones técnicas, tolerancias, etc."></textarea>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3 class="form-section-title"><i class="fa fa-paperclip"></i> Archivos Adjuntos</h3>
+            <div class="upload-zone" id="upload-zone">
+              <i class="fa fa-cloud-upload-alt"></i>
+              <p>Arrastra planos o programas de diseño (PDF, DXF, DWG, imágenes)</p>
+              <label class="btn-secondary" for="ft-archivos">
+                <i class="fa fa-folder-open"></i> Seleccionar Archivos
+              </label>
+              <input type="file" id="ft-archivos" multiple accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.step,.iges" style="display:none"/>
+            </div>
+            <div id="archivos-preview" class="archivos-preview"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancelar-trabajo"><i class="fa fa-times"></i> Cancelar</button>
+        <button class="btn-primary" id="btn-guardar-trabajo"><i class="fa fa-save"></i> Guardar Trabajo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: EVIDENCIA OPERADOR ===== -->
+  <div id="modal-evidencia" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay-evidencia"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2><i class="fa fa-camera"></i> Agregar Evidencia y Observaciones</h2>
+        <button class="modal-close" id="modal-evidencia-close"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div id="evidencia-trabajo-info" class="evidencia-info-box"></div>
+        <div class="form-group">
+          <label><i class="fa fa-comment-alt"></i> Observaciones del Proceso</label>
+          <textarea id="ev-observaciones" rows="4" placeholder="Describe contratiempos, estado del material, condiciones del proceso, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-camera"></i> Fotografías de Evidencia</label>
+          <div class="upload-zone">
+            <i class="fa fa-images"></i>
+            <p>Fotografías del maquinado finalizado</p>
+            <label class="btn-secondary" for="ev-fotos">
+              <i class="fa fa-folder-open"></i> Seleccionar Fotos
+            </label>
+            <input type="file" id="ev-fotos" multiple accept=".jpg,.jpeg,.png,.webp" style="display:none"/>
+          </div>
+          <div id="ev-fotos-preview" class="archivos-preview"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancelar-evidencia"><i class="fa fa-times"></i> Cancelar</button>
+        <button class="btn-success" id="btn-terminar-trabajo"><i class="fa fa-check-circle"></i> Dar por Terminado</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: USUARIO ===== -->
+  <div id="modal-usuario" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay-usuario"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="modal-usuario-title"><i class="fa fa-user-plus"></i> Nuevo Usuario</h2>
+        <button class="modal-close" id="modal-usuario-close"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-usuario">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre Completo *</label>
+              <input type="text" id="fu-nombre" required placeholder="Nombre del usuario"/>
+            </div>
+            <div class="form-group">
+              <label>Username *</label>
+              <input type="text" id="fu-username" required placeholder="Usuario de acceso"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contraseña *</label>
+              <input type="password" id="fu-password" placeholder="Contraseña de acceso"/>
+            </div>
+            <div class="form-group">
+              <label>Rol *</label>
+              <select id="fu-rol" required>
+                <option value="">Seleccionar rol</option>
+                <option value="admin">Administrador</option>
+                <option value="operador">Operador / Realizador</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" id="fu-torno-group">
+            <label>Torno Asignado</label>
+            <select id="fu-torno">
+              <option value="Todos">Todos</option>
+              <option value="Torno 1">Torno 1</option>
+              <option value="Torno 2">Torno 2</option>
+              <option value="Torno 3">Torno 3</option>
+              <option value="Torno 4">Torno 4</option>
+            </select>
+          </div>
+          <div class="form-group" id="fu-permisos-group" style="display:none">
+            <label><i class="fa fa-shield-alt"></i> Permisos del Operador</label>
+            <div class="permisos-checkboxes">
+              <label class="check-item"><input type="checkbox" name="perm" value="ver_planos" checked/> Ver Planos/Archivos</label>
+              <label class="check-item"><input type="checkbox" name="perm" value="descargar_planos"/> Descargar Planos</label>
+              <label class="check-item"><input type="checkbox" name="perm" value="ver_otros_tornos"/> Ver Otros Tornos</label>
+              <label class="check-item"><input type="checkbox" name="perm" value="agregar_obs" checked/> Agregar Observaciones</label>
+              <label class="check-item"><input type="checkbox" name="perm" value="agregar_evidencia" checked/> Agregar Evidencia</label>
+              <label class="check-item"><input type="checkbox" name="perm" value="descargar_reportes"/> Descargar Reportes</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancelar-usuario"><i class="fa fa-times"></i> Cancelar</button>
+        <button class="btn-primary" id="btn-guardar-usuario"><i class="fa fa-save"></i> Guardar Usuario</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: VER DETALLE TRABAJO ===== -->
+  <div id="modal-detalle" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay-detalle"></div>
+    <div class="modal-box modal-large">
+      <div class="modal-header">
+        <h2><i class="fa fa-eye"></i> Detalle del Trabajo</h2>
+        <button class="modal-close" id="modal-detalle-close"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="detalle-content"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cerrar-detalle"><i class="fa fa-times"></i> Cerrar</button>
+        <button class="btn-primary" id="btn-editar-desde-detalle" style="display:none"><i class="fa fa-edit"></i> Editar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-spinner">
+      <i class="fa fa-cog fa-spin"></i>
+      <p>Procesando...</p>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/operador.js"></script>
+  <script src="js/reportes.js"></script>
+</body>
+</html>
